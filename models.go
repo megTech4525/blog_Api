@@ -52,3 +52,8 @@ type postResponse struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+type updatePostRequest struct {
+	Title   string `json:"title" binding:"required"`
+	Content string `json:"content" binding:"required"`
+}
