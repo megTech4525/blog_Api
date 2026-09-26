@@ -159,3 +159,29 @@ func updatePost(db *sqlx.DB) gin.HandlerFunc {
 			"updated_at": post.UpdatedAt})
 	}
 }
+
+func deletePost(db *sqlx.DB) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		PostID := c.Param("id")
+		userID := c.MustGet("USERID").(int)
+
+		query :=
+			`DELETE FROM posts WHERE id = $1 and user_id = $2`
+		result, err := db.Exec(query, PostID, userID)
+		if err != nil {
+			c.JSON(500, gin.H{"error": "post not found"})
+			log.Println(err.Error())
+			return
+		}
+
+		rowsAffected, err := result.RowsAffected()
+		if err != nil {
+			c.JSON(500, gin.H{"error": "deletion not completed"})
+
+		}
+		if rowsAffected == 0 {
+			c.JSON(404, gin.H{"error": "no post found"})
+		}
+		c.JSON(200, gin.H{"msg": "post deleted successfully"})
+	}
+}
