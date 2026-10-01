@@ -20,8 +20,13 @@ func main() {
 	defer database.Close()
 
 	r := gin.Default()
-
-	r.POST("/register", Reg(database))
-
+	protected := r.Group("/")
+	protected.Use(authMilddleware())
+	{
+		protected.POST("/register", Reg(database))
+		protected.GET("/login", login(database))
+		protected.PATCH("/updatePost", updatePost(database))
+		protected.DELETE("/deletePost", deletePost(database))
+	}
 	r.Run()
 }
