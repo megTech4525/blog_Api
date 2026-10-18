@@ -15,7 +15,11 @@ func main() {
 		log.Println("env could not load", err)
 	}
 	loadJwtSecret()
-	database := Connect()
+	database, err := Connect()
+	if err != nil {
+		log.Fatal("invalid connection")
+		return
+	}
 
 	defer database.Close()
 

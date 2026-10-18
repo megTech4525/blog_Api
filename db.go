@@ -9,7 +9,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func Connect() *sqlx.DB {
+func Connect() (*sqlx.DB, error) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		os.Getenv("DB_HOST"),
@@ -23,18 +23,18 @@ func Connect() *sqlx.DB {
 	db, err := sqlx.Connect("pgx", dsn)
 
 	if err != nil {
-		log.Println(err)
+		return nil, err
 
 	}
 
-	if err := db.Ping(); err != nil {
-		log.Println(err)
+	// if err := db.Ping(); err != nil {
+	// 	log.Println(err)
 
-	}
+	// }
 
 	db.SetMaxIdleConns(25)
 	db.SetMaxIdleConns(25)
 	log.Println("db is connected", os.Getenv("DB_NAME"))
-	return db
+	return db, nil
 
 }
